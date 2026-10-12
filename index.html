@@ -3,38 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>بطبوط - Batboot</title>
+<title>بطبوط - الألعاب العشر</title>
+<style>
+body {font-family:Arial;text-align:center;background:#e9fff5;padding:20px}
+h1 {color:#087c65}
+a.game {display:block;background:#159b7c;color:white;padding:17px;margin:12px auto;border-radius:14px;text-decoration:none;max-width:500px;font-size:22px}
+</style>
 </head>
 <body>
-<h1>🐧 أهلاً بكم في بطبوط</h1>
-<p>اضغط على الزر لبدء اللعب</p>
-<a href="Batboot_Age_2_LOCKED_FROM_3_V2.html">
-<button>🎮 ابدأ اللعب</button>
-</a>
-<hr>
-<h2>🐧 مغامرات بطبوط — الألعاب العشر</h2>
-<div id="batboot-games"></div>
+<h1>🐧 مرحباً بكم في مغامرات بطبوط</h1>
+<h2>🎮 الألعاب العشر</h2>
+<div id="games"></div>
 <script>
-const games = [
-  "Batboot_11-1.html 11-1.html",
-  "Batboot_11-2.html11-2.html",
-  "Batboot_11-3.html 11-3.html",
-  "Batboot_11-4.html 11-4.html",
-  "Batboot_11-5.html 11-5.html",
-  "Batboot_11-6.html 11-6.html",
-  "Batboot_11-7.html11-7.html",
-  "11-8.html",
-  "Batboot_11-9.html11-9.html",
-  "Batboot_11-10.html11-10.html"
+const files = [
+"Batboot_11-1.html 11-1.html",
+"Batboot_11-2.html11-2.html",
+"Batboot_11-3.html 11-3.html",
+"Batboot_11-4.html 11-4.html",
+"Batboot_11-5.html 11-5.html",
+"Batboot_11-6.html 11-6.html",
+"Batboot_11-7.html11-7.html",
+"11-8.html",
+"Batboot_11-9.html11-9.html",
+"Batboot_11-10.html11-10.html"
 ];
-const box = document.getElementById("batboot-games");
-games.forEach((file, i) => {
-  const a = document.createElement("a");
-  a.href = encodeURI(file);
-  a.textContent = "🎮 اللعبة " + (i + 1);
-  a.style = "display:block;margin:10px;padding:15px;background:#19a7a0;color:white;border-radius:12px;text-align:center;text-decoration:none;font-size:20px";
-  box.appendChild(a);
+files.forEach((file,i)=>{
+const a=document.createElement("a");
+a.href=encodeURI(file);
+a.className="game";
+a.textContent="🎮 اللعبة "+(i+1);
+document.getElementById("games").appendChild(a);
 });
 </script>
 </body>
-</html>
+</html> = encodeURI(file);
