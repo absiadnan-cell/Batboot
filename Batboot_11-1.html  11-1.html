@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Batboot 11-1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eaf8ff;color:#123;text-align:center}
+.wrap{max-width:520px;margin:auto;padding:12px}.top{display:flex;justify-content:space-between;font-weight:bold;margin:4px 2px 10px}
+#game{height:620px;max-height:70vh;min-height:430px;position:relative;overflow:hidden;border-radius:22px;border:2px solid #fff;background:linear-gradient(#8bd4ff 0 28%,#eafaff 28% 100%);touch-action:none}
+.mountain{position:absolute;top:20px;left:22px;font-size:54px}.tree{position:absolute;top:55px;right:24px;font-size:44px}
+.road{position:absolute;left:7%;right:7%;top:23%;bottom:0;border-left:4px solid rgba(255,255,255,.8);border-right:4px solid rgba(255,255,255,.8);border-radius:48% 48% 0 0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.8) 0 4px,transparent 5px 48px),linear-gradient(90deg,#e9fbff,#91d9f5,#e9fbff)}
+.line1,.line2{position:absolute;top:23%;bottom:0;border-left:2px solid rgba(255,255,255,.7)}.line1{left:38%}.line2{right:38%}
+#objects{position:absolute;inset:0}.bat{position:absolute;bottom:20px;left:calc(50% - 38px);width:76px;transition:left .12s;text-align:center;user-select:none}.peng{font-size:62px;line-height:1}.ski{font-size:26px;margin-top:-8px}
+#msg{position:absolute;top:8px;left:12px;right:12px;padding:7px;background:rgba(255,255,255,.8);border-radius:10px;font-weight:bold}
+button{font-size:20px;font-weight:bold;border:0;border-radius:14px;min-height:54px;margin-top:10px;padding:8px 14px}
+#start{width:100%;background:#1677ff;color:#fff}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.controls button{background:white;border:1px solid #b8d8e8;color:#123}
+.note{font-size:13px;margin-top:8px;color:#456}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><span>🐧 المرحلة 11-1</span><span>النقاط: <b id="score">0</b></span></div>
+<div id="game">
+<div class="mountain">🏔️</div><div class="tree">🌲</div>
+<div id="road" class="road"></div><div class="line1"></div><div class="line2"></div>
+<div id="objects"></div>
+<div id="bat" class="bat"><div class="peng">🐧</div><div class="ski">🎿</div></div>
+<div id="msg">اضغط «ابدأ»</div>
+</div>
+<button id="start">▶ ابدأ 11-1</button>
+<div class="controls"><button id="right">يمين ◀</button><button id="left">▶ يسار</button></div>
+<div class="note">🍏 +10 • ⭐ +20 • 🪨 تجنّب الصخرة</div>
+</div>
+<script>
+const game=document.getElementById('game'),bat=document.getElementById('bat'),objects=document.getElementById('objects'),scoreEl=document.getElementById('score'),msg=document.getElementById('msg'),startBtn=document.getElementById('start'),road=document.getElementById('road');
+let lane=1,running=false,score=0,items=[],raf=0,last=0,spawnAt=0,bg=0;
+const lanes=['24%','50%','76%'];
+function pos(){bat.style.left='calc('+lanes[lane]+' - 38px)'}
+function move(d){if(!running)return;lane=Math.max(0,Math.min(2,lane+d));pos()}
+function spawn(){let q=Math.random(),type=q<.38?'apple':q<.58?'star':'rock',ln=Math.floor(Math.random()*3),e=document.createElement('div');e.textContent=type==='apple'?'🍏':type==='star'?'⭐':'🪨';e.style.cssText='position:absolute;font-size:25px;left:calc('+lanes[ln]+' - 14px);top:105px;user-select:none';objects.appendChild(e);items.push({e,l:ln,y:105,type,z:25})}
+function over(){running=false;cancelAnimationFrame(raf);msg.style.display='block';msg.textContent='💥 اصطدام! نتيجتك '+score;startBtn.textContent='↻ إعادة 11-1'}
+function loop(t){if(!running)return;let dt=Math.min(32,t-last||16);last=t;bg=(bg+5*dt/16)%48;road.style.backgroundPositionY=bg+'px';if(t-spawnAt>700){spawn();spawnAt=t}
+let h=game.clientHeight,hit1=h-115,hit2=h-45;
+for(let i=items.length-1;i>=0;i--){let o=items[i];o.y+=(3+Math.min(2,score/180))*dt/16;o.z=Math.min(46,o.z+.12*dt/16);o.e.style.top=o.y+'px';o.e.style.fontSize=o.z+'px';
+if(o.y>hit1&&o.y<hit2&&o.l===lane){if(o.type==='rock'){over();return}else{score+=o.type==='apple'?10:20;scoreEl.textContent=score;o.e.remove();items.splice(i,1);continue}}
+if(o.y>h){o.e.remove();items.splice(i,1)}}raf=requestAnimationFrame(loop)}
+function start(){cancelAnimationFrame(raf);items.forEach(x=>x.e.remove());items=[];score=0;scoreEl.textContent='0';lane=1;pos();running=true;msg.style.display='none';startBtn.textContent='↻ إعادة 11-1';last=performance.now();spawnAt=last-400;spawn();raf=requestAnimationFrame(loop)}
+startBtn.addEventListener('click',start);document.getElementById('left').addEventListener('click',()=>move(-1));document.getElementById('right').addEventListener('click',()=>move(1));
+let sx=null;game.addEventListener('pointerdown',e=>sx=e.clientX);game.addEventListener('pointerup',e=>{if(sx===null)return;let d=e.clientX-sx;if(Math.abs(d)>20)move(d>0?1:-1);sx=null});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});pos();
+</script>
+</body></html>

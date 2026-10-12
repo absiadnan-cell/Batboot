@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Batboot 11-5</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#dff6ff;color:#123;text-align:center}
+.wrap{max-width:590px;margin:auto;padding:10px}.top{display:flex;justify-content:space-between;font-weight:800;margin:5px}
+#game{height:660px;max-height:73vh;min-height:470px;position:relative;overflow:hidden;border-radius:25px;border:3px solid white;touch-action:none;background:linear-gradient(#5fbff4 0 25%,#dff7ff 25% 100%)}
+#road{position:absolute;left:4%;right:4%;top:25%;bottom:0;border-left:5px solid white;border-right:5px solid white;border-radius:48% 48% 0 0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.88) 0 5px,transparent 6px 50px),linear-gradient(90deg,#ecffff,#83d4f4,#ecffff)}
+.sep{position:absolute;top:25%;bottom:0;border-left:2px dashed rgba(255,255,255,.9)}.s1{left:27%}.s2{left:50%}.s3{left:73%}
+.decor{position:absolute;font-size:42px}.d1{top:15px;left:15px}.d2{top:45px;right:15px}.d3{top:105px;left:55px}.d4{top:105px;right:55px}
+#objects{position:absolute;inset:0}.bat{position:absolute;bottom:18px;width:84px;transition:left .09s ease;user-select:none}.peng{font-size:70px;line-height:.95}.ski{font-size:29px;margin-top:-5px}
+#msg{position:absolute;top:8px;left:12px;right:12px;background:rgba(255,255,255,.9);padding:8px;border-radius:12px;font-weight:bold}
+#shield{position:absolute;bottom:12px;width:96px;height:105px;border:4px solid #55d7ff;border-radius:50%;display:none;box-shadow:0 0 18px #55d7ff}
+#win{display:none;position:absolute;inset:0;background:rgba(0,70,130,.82);z-index:20;align-items:center;justify-content:center;padding:25px}.card{background:white;border-radius:22px;padding:24px;width:100%;max-width:380px}
+button{border:0;border-radius:15px;min-height:55px;font-size:20px;font-weight:bold;margin-top:9px}#start{width:100%;background:#1578ff;color:white}.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.controls button{background:white;border:1px solid #aad3e7}.note{font-size:13px;color:#456;margin-top:7px}
+</style></head>
+<body><div class="wrap">
+<div class="top"><span>🐧 بطبوط 11-5 — درع الثلج</span><span>⭐ <b id="score">0</b>/500</span></div>
+<div id="game">
+<div class="decor d1">🏔️</div><div class="decor d2">🌲</div><div class="decor d3">🏰</div><div class="decor d4">⛄</div>
+<div id="road"></div><div class="sep s1"></div><div class="sep s2"></div><div class="sep s3"></div><div id="objects"></div>
+<div id="bat" class="bat"><div class="peng">🐧</div><div class="ski">🎿</div></div><div id="shield"></div>
+<div id="msg">مرحلة جديدة! اجمع 💎 لتحصل على درع يحمي بطبوط من ضربة واحدة</div>
+<div id="win"><div class="card"><div style="font-size:60px">🏆🐧💎</div><h2>أحسنت يا بطل!</h2><p style="font-size:18px;font-weight:bold">أنهيت المرحلة 11-5 ووصلت إلى 500 نقطة!</p><button id="next" style="width:100%;background:#18a558;color:white">🚀 الذهاب إلى المرحلة 11-6</button></div></div>
+</div>
+<button id="start">▶ ابدأ 11-5</button>
+<div class="controls"><button id="right">يمين ◀</button><button id="left">▶ يسار</button></div>
+<div class="note">🍏 +10 &nbsp; ⭐ +20 &nbsp; 🐟 +30 &nbsp; 💎 درع ضربة واحدة &nbsp; 🪨🧊 حواجز</div>
+</div>
+<script>
+const G=document.getElementById('game'),P=document.getElementById('bat'),O=document.getElementById('objects'),SC=document.getElementById('score'),M=document.getElementById('msg'),S=document.getElementById('start'),ROAD=document.getElementById('road'),WIN=document.getElementById('win'),NEXT=document.getElementById('next'),SH=document.getElementById('shield');
+let lane=1,run=false,score=0,shield=false,items=[],raf=0,last=0,spawnAt=0,bg=0;const L=['15.5%','38.5%','61.5%','84.5%'];
+function place(){P.style.left='calc('+L[lane]+' - 42px)';SH.style.left='calc('+L[lane]+' - 48px)'}
+function move(d){if(run){lane=Math.max(0,Math.min(3,lane+d));place()}}
+function spawn(){let q=Math.random(),t=q<.24?'apple':q<.39?'star':q<.49?'fish':q<.56?'gem':q<.79?'rock':'ice',ln=Math.floor(Math.random()*4),e=document.createElement('div');e.textContent=t==='apple'?'🍏':t==='star'?'⭐':t==='fish'?'🐟':t==='gem'?'💎':t==='rock'?'🪨':'🧊';e.style.cssText='position:absolute;top:145px;left:calc('+L[ln]+' - 15px);font-size:25px;user-select:none';O.appendChild(e);items.push({e,l:ln,y:145,t,z:25})}
+function win(){run=false;cancelAnimationFrame(raf);score=500;SC.textContent=500;try{localStorage.setItem('batboot_11_5_complete','yes')}catch(e){}WIN.style.display='flex'}
+function lose(){run=false;cancelAnimationFrame(raf);M.style.display='block';M.textContent='💥 اصطدام! نتيجتك '+score;S.textContent='↻ إعادة 11-5'}
+function loop(t){if(!run)return;let dt=Math.min(32,t-last||16);last=t;bg=(bg+6.3*dt/16)%50;ROAD.style.backgroundPositionY=bg+'px';if(t-spawnAt>520){spawn();if(score>=220&&Math.random()<.30)setTimeout(()=>{if(run)spawn()},170);spawnAt=t}let h=G.clientHeight,a=h-140,b=h-45;
+for(let i=items.length-1;i>=0;i--){let o=items[i];o.y+=(3.45+Math.min(2.7,score/150))*dt/16;o.z=Math.min(48,o.z+.14*dt/16);o.e.style.top=o.y+'px';o.e.style.fontSize=o.z+'px';
+if(o.y>a&&o.y<b&&o.l===lane){if(o.t==='rock'||o.t==='ice'){if(shield){shield=false;SH.style.display='none';o.e.remove();items.splice(i,1);score+=5;SC.textContent=score;continue}else{lose();return}}else if(o.t==='gem'){shield=true;SH.style.display='block';o.e.remove();items.splice(i,1);continue}else{score+=o.t==='apple'?10:o.t==='star'?20:30;SC.textContent=score;o.e.remove();items.splice(i,1);if(score>=500){win();return}continue}}if(o.y>h){o.e.remove();items.splice(i,1)}}raf=requestAnimationFrame(loop)}
+function start(){WIN.style.display='none';SH.style.display='none';shield=false;cancelAnimationFrame(raf);items.forEach(x=>x.e.remove());items=[];score=0;SC.textContent=0;lane=1;place();run=true;M.style.display='none';S.textContent='↻ إعادة 11-5';last=performance.now();spawnAt=last-400;spawn();raf=requestAnimationFrame(loop)}
+S.onclick=start;document.getElementById('left').onclick=()=>move(-1);document.getElementById('right').onclick=()=>move(1);
+let sx=null;G.onpointerdown=e=>sx=e.clientX;G.onpointerup=e=>{if(sx!==null){let d=e.clientX-sx;if(Math.abs(d)>20)move(d>0?1:-1);sx=null}};
+document.onkeydown=e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)};
+NEXT.onclick=()=>alert('🎉 تم فتح المرحلة 11-6!');place();
+</script></body></html>
