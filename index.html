@@ -11,5 +11,30 @@
 <a href="Batboot_Age_2_LOCKED_FROM_3_V2.html">
 <button>🎮 ابدأ اللعب</button>
 </a>
+<hr>
+<h2>🐧 مغامرات بطبوط — الألعاب العشر</h2>
+<div id="batboot-games"></div>
+<script>
+const games = [
+  "Batboot_11-1.html 11-1.html",
+  "Batboot_11-2.html11-2.html",
+  "Batboot_11-3.html 11-3.html",
+  "Batboot_11-4.html 11-4.html",
+  "Batboot_11-5.html 11-5.html",
+  "Batboot_11-6.html 11-6.html",
+  "Batboot_11-7.html11-7.html",
+  "11-8.html",
+  "Batboot_11-9.html11-9.html",
+  "Batboot_11-10.html11-10.html"
+];
+const box = document.getElementById("batboot-games");
+games.forEach((file, i) => {
+  const a = document.createElement("a");
+  a.href = encodeURI(file);
+  a.textContent = "🎮 اللعبة " + (i + 1);
+  a.style = "display:block;margin:10px;padding:15px;background:#19a7a0;color:white;border-radius:12px;text-align:center;text-decoration:none;font-size:20px";
+  box.appendChild(a);
+});
+</script>
 </body>
 </html>
