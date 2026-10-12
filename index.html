@@ -30,7 +30,7 @@ const games = [
 const box = document.getElementById("batboot-games");
 games.forEach((file, i) => {
   const a = document.createElement("a");
-  a.href = encodeURI(file);
+  a.a.href = encodeURIComponent(file);
   a.textContent = "🎮 اللعبة " + (i + 1);
   a.style = "display:block;margin:10px;padding:15px;background:#19a7a0;color:white;border-radius:12px;text-align:center;text-decoration:none;font-size:20px";
   box.appendChild(a);
